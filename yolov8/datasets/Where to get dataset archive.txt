@@ -1,0 +1,2 @@
+The size of dataset was too big to upload (even with LFS).
+So look for it here https://huggingface.co/datasets/Priler/csgobot

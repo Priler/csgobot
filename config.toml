@@ -1,0 +1,52 @@
+[main]
+detector = "yolov8" # main detector. Respective config section must be present
+
+[grabber]
+# window_title = "Counter-Strike: Global Offensive - Direct3D 9" # capture windows pos & size by window rect
+window_title = "Counter-Strike 2"
+
+obs_vc_device_index = -1 # -1 to ignore
+obs_vc_device_name = "OBS Virtual Camera"
+
+# or set custom caption coords
+left = 0
+top = 0
+width = 0 # 1920
+height = 0 # 1080
+
+[yolov8]
+# weights = "./yolov8/best.pt"
+# weights = "./yolov8/cs2_yolov8m_640_clean_base.pt"
+# weights = "./yolov8/yolov8s_csgoV1_640.pt"
+weights = "./yolov8/cs2_yolov8m_640_augmented_v4.pt"
+resize_image_to_fit_multiply_of_32 = false #lowers performance. Only use if grabbed image size is not multiply of 32
+
+[yolov7]
+# weights = "./yolov7/yolov7-csgoV5_1024.pt"
+# weights = "./yolov7/yolov7-csgoV6_640.pt"
+weights = "./yolov7/yolov7-csgoV6_640.pt"
+# inference_size = 640
+inference_size = 1024
+conf_thres = 0.1
+iou_thres = 0.45
+augment = 0
+device = ""
+resize_image_to_fit_multiply_of_32 = false #lowers performance. Only use if grabbed image size is not multiply of 32
+
+[fov_mouse]
+fov_h = 106.26
+fov_v = 73.74
+x360 = 16364 # 163636
+sensitivity = 2.1 # not used
+
+[cv2]
+title = "CS2 AI vision"
+show_window = true #lowers performance not that much, but can be turned of to get extra few inference FPS (1-2 or smth like that)
+paint_boxes = true #in most cases you want this to be turned on
+show_fps = true
+show_current_team = true
+paint_aim_dots = true
+convert_rgb2bgr = true #lowers performance. Should not be used
+resize_window = true #lowers performance. Should not be used
+window_width = 1280 #used only if resize_window is set to true
+window_height = 720 #used only if resize_window is set to true

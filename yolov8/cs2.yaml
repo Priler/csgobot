@@ -1,0 +1,10 @@
+# train and val data as 1) directory: path/images/, 2) file: path/images.txt, or 3) list: [path1/images/, path2/images/]
+train: ./prepared/train  # train images
+val: ./prepared/val  # validate images
+test: ./prepared/test  # test images
+
+# number of classes
+nc: 4
+
+# class names
+names: [ 'c', 'ch', 't', 'th' ] # person
