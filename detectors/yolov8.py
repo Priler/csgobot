@@ -14,7 +14,7 @@ class YOLOv8Detector(BaseDetector):
     """
     YOLOv8-based object detector using Ultralytics library.
     """
-    
+
     def __init__(
         self,
         class_names: List[str],
@@ -26,7 +26,7 @@ class YOLOv8Detector(BaseDetector):
     ):
         """
         Initialize YOLOv8 detector.
-        
+
         Args:
             class_names: List of class names
             weights_path: Path to .pt weights file
@@ -41,9 +41,9 @@ class YOLOv8Detector(BaseDetector):
             confidence_threshold=confidence_threshold,
             iou_threshold=iou_threshold,
         )
-        
+
         self.half_precision = half_precision
-        
+
         # Import ultralytics here to allow graceful failure
         try:
             from ultralytics import YOLO
@@ -52,25 +52,25 @@ class YOLOv8Detector(BaseDetector):
                 "ultralytics package required for YOLOv8. "
                 "Install with: pip install ultralytics"
             )
-        
+
         # Select device
         if device is None:
             self.device = "cuda" if torch.cuda.is_available() else "cpu"
         else:
             self.device = device
-        
+
         # Load model
         self.model = YOLO(weights_path)
         self.model.to(self.device)
-        
+
         # Warmup
         self._warmup()
-    
+
     def _warmup(self) -> None:
         """Warmup the model with a dummy inference."""
         dummy = np.zeros((640, 640, 3), dtype=np.uint8)
         self.detect(dummy, verbose=False)
-    
+
     def detect(
         self,
         image: np.ndarray,
@@ -78,25 +78,25 @@ class YOLOv8Detector(BaseDetector):
     ) -> Dict[str, List[Dict[str, Any]]]:
         """
         Run YOLOv8 detection on an image.
-        
+
         Args:
             image: Input image (HWC format, RGB or BGR)
             verbose: Whether to print verbose output
-            
+
         Returns:
             Dict mapping class names to lists of detection dicts
         """
         # Validate image
         if image is None or image.size == 0:
             return {}
-        
+
         if len(image.shape) != 3 or image.shape[2] > 4:
             return {}
-        
+
         # Remove alpha channel if present
         if image.shape[2] == 4:
             image = image[:, :, :3]
-        
+
         # Run inference
         results = self.model.predict(
             source=image,
@@ -105,32 +105,32 @@ class YOLOv8Detector(BaseDetector):
             conf=self.confidence_threshold,
             iou=self.iou_threshold,
         )
-        
+
         # Parse results
         detections: Dict[str, List[Dict]] = {}
-        
+
         for result in results:
             boxes = result.boxes
-            
+
             for i, cls_id in enumerate(boxes.cls):
                 cls_id_int = int(cls_id)
                 class_name = self.get_class_name(cls_id_int)
-                
+
                 if class_name not in detections:
                     detections[class_name] = []
-                
+
                 # Get bounding box
                 xyxy = boxes[i].xyxy.cpu().numpy()[0].tolist()
                 conf = boxes.conf[i].item()
-                
+
                 detections[class_name].append({
                     "cls": cls_id_int,
                     "conf": conf,
                     "xyxy": xyxy,
                 })
-        
+
         return detections
-    
+
     def detect_and_filter(
         self,
         image: np.ndarray,
@@ -139,12 +139,12 @@ class YOLOv8Detector(BaseDetector):
     ) -> List[Dict[str, Any]]:
         """
         Convenience method to detect and filter in one call.
-        
+
         Args:
             image: Input image
             include_classes: Classes to include in results
             verbose: Verbose output
-            
+
         Returns:
             List of filtered detection dicts
         """
