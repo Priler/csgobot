@@ -111,6 +111,8 @@ class AimConfig:
     
     # Smoothing (1.0 = instant, higher = slower)
     smoothing_factor: float = 1.0
+
+    dead_zone: float = 5.0  # Minimum pixel distance to move (should prevent over-aiming)
     
     # Auto-shoot settings
     auto_shoot: bool = False

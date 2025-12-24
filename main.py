@@ -296,24 +296,24 @@ def detection_process(
         
         # Process if activated
         if activated.is_set() and detections:
-            # Select best target
+            # select best target
             target = target_selector.select_best_target(
                 detections,
                 max_distance=config.aim.max_assist_distance,
             )
             
             if target is not None:
-                # Calculate aim movement using CORRECT FOV math
                 aim_result = fov_mouse.get_move(
                     target.aim_x,
                     target.aim_y,
                     smoothing=config.aim.smoothing_factor,
                 )
                 
-                # Move mouse
-                mouse.move_relative(aim_result.mouse_x, aim_result.mouse_y)
+                # only move if outside ded zone (prevents over-aiming hopefully)
+                if aim_result.pixel_distance > config.aim.dead_zone:
+                    mouse.move_relative(aim_result.mouse_x, aim_result.mouse_y)
                 
-                # Draw aim point on preview
+                # draw aim point on preview
                 if config.preview.enabled:
                     detector.draw_aim_point(
                         img,
