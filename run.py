@@ -55,7 +55,7 @@ FOV_VERTICAL = 73.74
 # 2. Record mouse movement while doing a full 360
 # 3. That number is your x360
 # X360 = 16364  # Default for CS2 at sensitivity 1.0
-X360 = 7792  # Default for CS2 at sensitivity 1.0
+X360 = 7792 # Default for CS2 at sensitivity 1.0
 
 # Aim settings
 CURRENT_TEAM = Team.CT  # Your starting team
@@ -64,7 +64,7 @@ MAX_ASSIST_DISTANCE = 300  # Max pixel distance to engage
 SMOOTHING = 1.0  # 1.0 = instant, 2.0 = half speed, etc.
 AUTO_SHOOT = False  # Automatic shooting (not recommended)
 DEAD_ZONE = 5.0  # Minimum pixel distance to move
-ONE_SHOT = True  # Only move once per activation
+ONE_SHOT = False  # Only move once per activation
 
 # Hotkeys
 ACTIVATION_HOTKEY = 58  # CAPS LOCK
@@ -77,32 +77,33 @@ PREVIEW_WIDTH = 1280
 PREVIEW_HEIGHT = 720
 
 
+
 # ===========================
 # DON'T TOUCH BELOW THIS LINE
 # ===========================
 
 def create_config() -> AppConfig:
     """Create application configuration from settings above."""
-
+    
     # Create sub-configs
     obs_config = OBSConfig(
         device_index=OBS_DEVICE_INDEX,
         device_name=OBS_DEVICE_NAME,
     )
-
+    
     fov_config = FOVConfig(
         horizontal=FOV_HORIZONTAL,
         vertical=FOV_VERTICAL,
         x360=X360,
     )
-
+    
     detector_config = DetectorConfig(
         type=DetectorType.YOLOV8,
         weights_path=YOLO_WEIGHTS,
         confidence_threshold=CONFIDENCE_THRESHOLD,
         iou_threshold=IOU_THRESHOLD,
     )
-
+    
     aim_config = AimConfig(
         current_team=CURRENT_TEAM,
         prioritize_heads=PRIORITIZE_HEADS,
@@ -112,18 +113,18 @@ def create_config() -> AppConfig:
         dead_zone=DEAD_ZONE,
         one_shot=ONE_SHOT,
     )
-
+    
     preview_config = PreviewConfig(
         enabled=SHOW_PREVIEW,
         size=(PREVIEW_WIDTH, PREVIEW_HEIGHT),
     )
-
+    
     hotkey_config = HotkeyConfig(
         activation=ACTIVATION_HOTKEY,
         change_team=TEAM_CHANGE_HOTKEY,
         exit=EXIT_HOTKEY,
     )
-
+    
     # Build grabber options
     grabber_options = {}
     if GRABBER_TYPE == "obs_vc":
@@ -131,7 +132,7 @@ def create_config() -> AppConfig:
             "device_index": OBS_DEVICE_INDEX,
             "device_name": OBS_DEVICE_NAME,
         }
-
+    
     # Create main config
     config = AppConfig(
         window_title=WINDOW_TITLE,
@@ -144,7 +145,7 @@ def create_config() -> AppConfig:
         preview=preview_config,
         hotkeys=hotkey_config,
     )
-
+    
     return config
 
 
@@ -154,10 +155,10 @@ def main() -> int:
         format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
     )
     logger = logging.getLogger("CS2Bot")
-
+    
     # Create configuration
     config = create_config()
-
+    
     # Try to get window rect
     try:
         from utils.win32 import get_window_rect
@@ -177,10 +178,10 @@ def main() -> int:
         logger.warning(f"Could not get window rect: {e}")
         logger.info("Using default capture region (1920x1080)")
         config.capture_region = CaptureRegion()
-
+    
     # Import and run
     from main import CS2Bot
-
+    
     logger.info("=" * 50)
     logger.info("CS2 Bot Starting")
     logger.info("=" * 50)
@@ -194,7 +195,7 @@ def main() -> int:
     logger.info(f"Change Team: Ctrl+T")
     logger.info(f"Exit: Ctrl+Q")
     logger.info("=" * 50)
-
+    
     bot = CS2Bot(config)
     return bot.run()
 

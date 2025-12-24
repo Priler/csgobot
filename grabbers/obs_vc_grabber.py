@@ -8,12 +8,20 @@ from exceptions import DeviceNotFoundError
 
 
 class OBSVirtualCameraGrabber(BaseGrabber):
+    """
+    OBS Virtual Camera grabber.
+    
+    Note: OBS captures the full source, so left/top offsets are handled by cropping.
+    For best results, configure OBS to capture only the game window.
+    """
 
     _type = "obs_vc"
 
     def __init__(self):
         self._device: Optional[cv2.VideoCapture] = None
         self._size_configured = False
+        self._frame_width = 0
+        self._frame_height = 0
 
     def initialize(
         self,
@@ -41,20 +49,32 @@ class OBSVirtualCameraGrabber(BaseGrabber):
         if self._device is not None:
             self._device.set(cv2.CAP_PROP_FRAME_WIDTH, width)
             self._device.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
+            self._frame_width = int(self._device.get(cv2.CAP_PROP_FRAME_WIDTH))
+            self._frame_height = int(self._device.get(cv2.CAP_PROP_FRAME_HEIGHT))
             self._size_configured = True
 
     def get_image(self, grab_area: Dict[str, int]) -> Optional[np.ndarray]:
         if self._device is None:
             self.initialize()
 
+        width = grab_area["width"]
+        height = grab_area["height"]
+        left = grab_area.get("left", 0)
+        top = grab_area.get("top", 0)
+
         if not self._size_configured:
-            self._configure_size(grab_area["width"], grab_area["height"])
+            self._configure_size(width + left, height + top)
 
         ret, frame = self._device.read()
         if not ret or frame is None:
             return None
 
-        return cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        
+        if left > 0 or top > 0:
+            frame = frame[top:top+height, left:left+width]
+        
+        return frame
 
     def cleanup(self) -> None:
         if self._device is not None:

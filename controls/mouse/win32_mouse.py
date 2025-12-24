@@ -1,6 +1,9 @@
 import ctypes
 from typing import Tuple
 
+import win32api
+import win32con
+
 from .base import BaseMouseControls
 
 
@@ -38,15 +41,12 @@ class Win32MouseControls(BaseMouseControls):
         return flags
 
     def move(self, x: int, y: int) -> None:
-        import win32api
         old_x, old_y = win32api.GetCursorPos()
         x = x if x != -1 else old_x
         y = y if y != -1 else old_y
         self._do_event(self.MOUSEEVENTF_MOVE | self.MOUSEEVENTF_ABSOLUTE, x, y)
 
     def move_relative(self, dx: int, dy: int) -> None:
-        import win32api
-        import win32con
         win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, dx, dy, 0, 0)
 
     def click(self, button: str = "left") -> None:
@@ -55,7 +55,6 @@ class Win32MouseControls(BaseMouseControls):
         self._do_event(down | up, 0, 0)
 
     def get_position(self) -> Tuple[int, int]:
-        import win32api
         return win32api.GetCursorPos()
 
     def press(self, button: str = "left") -> None:
