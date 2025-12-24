@@ -312,6 +312,10 @@ def detection_process(
                 # only move if outside ded zone (prevents over-aiming hopefully)
                 if aim_result.pixel_distance > config.aim.dead_zone:
                     mouse.move_relative(aim_result.mouse_x, aim_result.mouse_y)
+                    
+                    # one-shot mode: deactivate after single move
+                    if config.aim.one_shot:
+                        activated.clear()
                 
                 # draw aim point on preview
                 if config.preview.enabled:

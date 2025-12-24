@@ -113,6 +113,7 @@ class AimConfig:
     smoothing_factor: float = 1.0
 
     dead_zone: float = 5.0  # Minimum pixel distance to move (should prevent over-aiming)
+    one_shot: bool = False  # If True, only move once per activation
     
     # Auto-shoot settings
     auto_shoot: bool = False

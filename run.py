@@ -64,6 +64,7 @@ MAX_ASSIST_DISTANCE = 300  # Max pixel distance to engage
 SMOOTHING = 1.0  # 1.0 = instant, 2.0 = half speed, etc.
 AUTO_SHOOT = False  # Automatic shooting (not recommended)
 DEAD_ZONE = 5.0  # Minimum pixel distance to move
+ONE_SHOT = True  # Only move once per activation
 
 # Hotkeys
 ACTIVATION_HOTKEY = 58  # CAPS LOCK
@@ -110,6 +111,7 @@ def create_config() -> AppConfig:
         smoothing_factor=SMOOTHING,
         auto_shoot=AUTO_SHOOT,
         dead_zone=DEAD_ZONE,
+        one_shot=ONE_SHOT,
     )
     
     preview_config = PreviewConfig(
