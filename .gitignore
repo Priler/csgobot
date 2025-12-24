@@ -185,7 +185,4 @@ fabric.properties
 # .idea
 
 # custom
-_giveaway
-_old
-cs
-data
+_untracked
