@@ -1,3 +1,10 @@
+## This repo was fully re-written
+Now it fits my [AICaptureBase](https://github.com/Priler/aicapturebase) gh template
+
+
+
+    *proper readme will be added later (maybe)*
+
 ## Source code of the CSGO neural network.
 All the code is provided "as is."  
 Detectors are divided into classes and subclasses.  
