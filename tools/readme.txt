@@ -1,1 +1,0 @@
-A simple collection of some useful small python scripts.

@@ -1,0 +1,49 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "aicapturebase"
+version = "0.1.0"
+description = "High-performance screen capture template for AI/ML applications"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "MIT"
+keywords = ["screen-capture", "ai", "computer-vision", "automation"]
+
+dependencies = [
+    "numpy>=1.20.0",
+    "opencv-python>=4.5.0",
+    "mss>=6.0.0",
+]
+
+[project.optional-dependencies]
+win32 = [
+    "pywin32>=300",
+    "dxcam>=0.0.5",
+    "pygrabber>=0.1",
+]
+controls = [
+    "keyboard>=0.13.5",
+    "pynput>=1.7.0",
+    "PyAutoGUI>=0.9.50",
+    "PyDirectInput>=1.0.4",
+]
+streaming = [
+    "lz4>=4.0.0",
+]
+all = ["aicapturebase[win32,controls,streaming]"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "C4"]
+
+[tool.autopep8]
+max_line_length = 120
+ignore = "E501,W6"
+in-place = true
+recursive = true
+aggressive = 3
