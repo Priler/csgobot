@@ -37,17 +37,17 @@ BASE_X360 = 360.0 / CSGO_YAW  # = 16363.636...
 def calculate_x360(sensitivity: float, m_yaw: float = CSGO_YAW) -> int:
     """
     Calculate x360 from sensitivity.
-    
+
     Args:
         sensitivity: In-game sensitivity value
         m_yaw: Yaw rate (default 0.022 for CS2/CSGO)
-    
+
     Returns:
         x360 value (mouse counts for 360 degree turn)
     """
     if sensitivity <= 0:
         raise ValueError("Sensitivity must be positive")
-    
+
     x360 = 360.0 / (m_yaw * sensitivity)
     return int(round(x360))
 
@@ -55,17 +55,17 @@ def calculate_x360(sensitivity: float, m_yaw: float = CSGO_YAW) -> int:
 def calculate_sensitivity(x360: int, m_yaw: float = CSGO_YAW) -> float:
     """
     Calculate sensitivity from x360.
-    
+
     Args:
         x360: Mouse counts for 360 degree turn
         m_yaw: Yaw rate (default 0.022 for CS2/CSGO)
-    
+
     Returns:
         Sensitivity value
     """
     if x360 <= 0:
         raise ValueError("x360 must be positive")
-    
+
     sensitivity = 360.0 / (m_yaw * x360)
     return sensitivity
 
@@ -83,22 +83,22 @@ def interactive_mode():
     print("  2. Type: sensitivity")
     print("  3. It will show your current value")
     print()
-    
+
     while True:
         try:
             sens_input = input("Enter your sensitivity (or 'q' to quit): ").strip()
-            
+
             if sens_input.lower() == 'q':
                 break
-            
+
             sensitivity = float(sens_input)
-            
+
             if sensitivity <= 0:
                 print("Sensitivity must be a positive number!")
                 continue
-            
+
             x360 = calculate_x360(sensitivity)
-            
+
             print()
             print("=" * 60)
             print(f"  Sensitivity: {sensitivity}")
@@ -108,7 +108,7 @@ def interactive_mode():
             print("Add this to your run.py:")
             print(f"    X360 = {x360}")
             print()
-            
+
             # Show common sensitivity table
             print("Reference table:")
             print("-" * 30)
@@ -117,7 +117,7 @@ def interactive_mode():
                 marker = " <-- YOU" if abs(s - sensitivity) < 0.01 else ""
                 print(f"  sens {s:>4.1f}  →  x360 = {x:>5}{marker}")
             print()
-            
+
         except ValueError:
             print("Please enter a valid number!")
             continue
@@ -129,7 +129,7 @@ def test_x360(x360_value: int):
         print("ERROR: keyboard module required for testing.")
         print("Install with: pip install keyboard")
         return
-    
+
     try:
         import win32api
         import win32con
@@ -137,7 +137,7 @@ def test_x360(x360_value: int):
         print("ERROR: pywin32 required for testing.")
         print("Install with: pip install pywin32")
         return
-    
+
     print("=" * 60)
     print(f"TESTING x360 = {x360_value}")
     print("=" * 60)
@@ -152,29 +152,29 @@ def test_x360(x360_value: int):
     print("  4. You should end up looking at the same point")
     print()
     print("Press CAPS LOCK to start (or Ctrl+C to cancel)...")
-    
+
     try:
         keyboard.wait(58)
     except KeyboardInterrupt:
         print("\nCancelled.")
         return
-    
+
     time.sleep(0.2)  # Brief delay
-    
+
     print("Moving mouse...")
-    
+
     # Move in small increments for smoothness
     chunk_size = 100
     num_chunks = x360_value // chunk_size
     remainder = x360_value % chunk_size
-    
+
     for _ in range(num_chunks):
         win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, chunk_size, 0, 0, 0)
         time.sleep(0.002)
-    
+
     if remainder:
         win32api.mouse_event(win32con.MOUSEEVENTF_MOVE, remainder, 0, 0, 0)
-    
+
     print("Done!")
     print()
     print("Results:")
@@ -182,7 +182,7 @@ def test_x360(x360_value: int):
     print("  - Rotated MORE than 360°?  → Your x360 is too HIGH")
     print("  - Rotated exactly 360°?    → Perfect!")
     print()
-    
+
     # Show what sensitivity this corresponds to
     sens = calculate_sensitivity(x360_value)
     print(f"This x360 corresponds to sensitivity {sens:.3f}")
@@ -198,37 +198,37 @@ Examples:
   python calibrate_x360.py                     # Interactive mode
   python calibrate_x360.py -s 1.5              # Calculate for sensitivity 1.5
   python calibrate_x360.py --test 16364        # Test x360 value in-game
-  
+
 Common values:
   Sensitivity 1.0  →  x360 = 16364
   Sensitivity 2.0  →  x360 = 8182
   Sensitivity 3.0  →  x360 = 5455
         """
     )
-    
+
     parser.add_argument(
         "-s", "--sensitivity",
         type=float,
         metavar="VALUE",
         help="Calculate x360 for this sensitivity",
     )
-    
+
     parser.add_argument(
         "--test",
         type=int,
         metavar="X360",
         help="Test an x360 value by moving the mouse in-game",
     )
-    
+
     parser.add_argument(
         "--m_yaw",
         type=float,
         default=CSGO_YAW,
         help=f"Custom m_yaw value (default: {CSGO_YAW})",
     )
-    
+
     args = parser.parse_args()
-    
+
     if args.test:
         test_x360(args.test)
     elif args.sensitivity:

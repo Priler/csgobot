@@ -16,19 +16,19 @@ __all__ = [
 def get_detector(detector_type: str, **kwargs) -> BaseDetector:
     """
     Factory function to get a detector by type.
-    
+
     Args:
         detector_type: "yolov8" or "yolov7"
         **kwargs: Passed to detector constructor
-        
+
     Returns:
         Detector instance
     """
     detectors = {
         "yolov8": YOLOv8Detector,
     }
-    
+
     if detector_type not in detectors:
         raise ValueError(f"Unknown detector type: {detector_type}. Available: {list(detectors.keys())}")
-    
+
     return detectors[detector_type](**kwargs)

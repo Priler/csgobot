@@ -10,7 +10,7 @@ from exceptions import DeviceNotFoundError
 class OBSVirtualCameraGrabber(BaseGrabber):
     """
     OBS Virtual Camera grabber.
-    
+
     Note: OBS captures the full source, so left/top offsets are handled by cropping.
     For best results, configure OBS to capture only the game window.
     """
@@ -70,10 +70,10 @@ class OBSVirtualCameraGrabber(BaseGrabber):
             return None
 
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        
+
         if left > 0 or top > 0:
-            frame = frame[top:top+height, left:left+width]
-        
+            frame = frame[top:top + height, left:left + width]
+
         return frame
 
     def cleanup(self) -> None:
